@@ -8,7 +8,7 @@ SHOOTS=( 'name-id' 'name-id' 'name-id' )
 USER_AGENT='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
 COOKIE="..." # find this in browsers dev tools
 QUALITY="Vive \/ Oculus HQ" # Low Quality, High Quality, Gear VR HQ, Vive \/ Oculus HQ
-3D_SETTINGS="oculus_180_180x180_3dh_LR" # must match above quality: mobile_low_180_180x180_3dh_LR, mobile_180_180x180_3dh_LR, oculus_180_180x180_3dh_LR, samsung_180_180x180_3dh_LR, _oculus_180_180x180_3dh_LR
+SETTINGS_3D="oculus_180_180x180_3dh_LR" # must match above quality: mobile_low_180_180x180_3dh_LR, mobile_180_180x180_3dh_LR, oculus_180_180x180_3dh_LR, samsung_180_180x180_3dh_LR, _oculus_180_180x180_3dh_LR
 
 download () {
 	url="$1"
@@ -23,7 +23,7 @@ for shoot in "${SHOOTS[@]}"; do
 	shoot_url="https://${SITE}.com/${VIDEO_URL}/${shoot}/"
 	download_html=$(curl -s -A "$USER_AGENT" -b "$COOKIE" "$shoot_url")
 	download_url=$(echo "$download_html" | sed -En "s/<source src=\"(.*)\" type=\"video\/mp4\" quality=\"$QUALITY\">/\1/p" | sed -e 's/\&amp;/\&/g' | tr -d " \t\n\r" )
-	download "$download_url" "${shoot}_${3D_SETTINGS}.mp4"
+	download "$download_url" "${shoot}_${SETTINGS_3D}.mp4"
 	echo ""
 done
 
