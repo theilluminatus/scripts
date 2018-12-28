@@ -28,8 +28,8 @@ for shoot in "${SHOOTS[@]}"; do
 	echo ""
 done
 
+# keep restarting in case a download wasn't completed
 echo ""
 echo "retry"
 echo ""
-
-./knkDownload.sh
+exec "$(readlink -f "$0")"
