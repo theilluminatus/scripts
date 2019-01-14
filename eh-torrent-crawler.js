@@ -7,7 +7,7 @@
 
 var galleries = [];
 Array.from(document.querySelectorAll(".itg tr[class]")).map((g) => { // get all galleries
-  return { "id": g.querySelector(".it2").id.substr(1), "link": (g.querySelector(".i a") ? g.querySelector(".i a").href:"") }
+  return { "id": Number(g.querySelector(".it2").id.substr(1)), "link": (g.querySelector(".i a") ? g.querySelector(".i a").href:undefined) }
 }).forEach(g => { 
   if (g.link) { // request list of torrents
     var req = new XMLHttpRequest() 
@@ -18,19 +18,19 @@ Array.from(document.querySelectorAll(".itg tr[class]")).map((g) => { // get all 
         Array.from(htmlDoc.querySelectorAll("form:not([enctype])")).map((f) => {
           return { id: g.id,
             link: f.querySelector("a").href,
-            seeders: Array.from(f.querySelector("td:nth-child(4)").childNodes)
+            seeders: Number(Array.from(f.querySelector("td:nth-child(4)").childNodes)
               .filter(c => c.nodeType === Node.TEXT_NODE)
               .map(t => t.textContent)
-              .join().trim()
+              .join().trim())
           }
         }).sort((a, b) => a.seeders > b.seeders)[0]
       )
-      if (galleries.length > 49) console.log(galleries)
+      if (galleries.length > 49) { console.log(JSON.stringify(galleries)); console.table(galleries) }
     })
     req.open("GET", g.link)
     req.send()
   } else {
     galleries.push(g);
-    if (galleries.length > 49) console.log(galleries)
+    if (galleries.length > 49) { console.log(JSON.stringify(galleries)); console.table(galleries) }
   }
 })
