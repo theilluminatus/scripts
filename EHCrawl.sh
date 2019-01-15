@@ -1,7 +1,6 @@
 #!/bin/bash
 # EHCrawl
 # This scripts downloads every gallery page (metadata) and torrent on a specific e(x)-hentai url. Missing torrents are logged.
-# TODO: create script to start torrent relative to torrent path? "C:\Program Files\qBittorrent\qbittorrent.exe" --save-path="F:\exhentai\123" "F:\F:\exhentai\123.torrent"
 
 LIST_LINK="https://exhentai.org/"
 COOKIE="sk=hash; ipb_member_id=int; ipb_pass_hash=hash" # has to contain: ipb_member_id, ipb_member_hash, sk
