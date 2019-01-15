@@ -9,23 +9,24 @@ COOKIE="sk=hash; ipb_member_id=int; ipb_pass_hash=hash" # has to contain: ipb_me
 
 save() {
     # TODO: download thumbnails as well
-    wget $1 -P "$2/preview" \
+    wget $1 -P "$2" \
         --header="Cookie: $COOKIE" \
         --timestamping \
         --random-wait \
-        −nv -N -nd -p -k -r \
+        −q -N -nd -p -k -r \
         --include-directories="t,z" \
         -R js \
         -e robots=off \
         --compression=auto
+        # -q -nv -d
 }
 
 download () {
-	echo "$(curl -s -b "$COOKIE" "$1")"
+	curl -s -b "$COOKIE" "$1" > "$2"
 }
 
 downloadhtml () {
-    echo $(download $1) | sed "s/'/\"/g"
+    echo $(curl -s -b "$COOKIE" "$1") | sed "s/'/\"/g"
 }
 
 
@@ -38,19 +39,27 @@ for gallery_link in "${list_items[@]}"; do
 
     echo -e "## Getting next gallery $gallery_link"
 
-    gallery_html=$(downloadhtml $gallery_link)
     id=$(echo $gallery_link | sed -e "s/https:\/\/exhentai.org\/g\///g" | cut -d '/' -f1)
     token=$(echo $gallery_link | sed -e "s/https:\/\/exhentai.org\/g\///g" | cut -d '/' -f2)
-    name=$(echo $gallery_html | grep -o '<h1 id="gn">[^<]*<' | cut -c 13- | sed 's/.$//')
 
-    # TODO: check if dir already exists
-    mkdir -p "./$id/"
-    save $gallery_link "./$id/"
+    if [ -d "./$id/" ]; then
+        echo -e "### Gallery $id already downloaded"
+        continue
+    fi
+
+    gallery_html=$(downloadhtml $gallery_link)
+    name=$(echo $gallery_html | grep -o '<h1 id="gn">[^<]*<' | cut -c 13- | sed 's/.$//')
 
     echo -e "### Gallery $name found"
 
+    mkdir -p "./$id/"
+    save $gallery_link "./$id/preview"
+
+    echo -e "### Downloaded preview"
+
     if echo $gallery_html | grep -q "Torrent Download ( 0 )" ; then
         echo -e "### No torrents found"
+        touch "./$id/notorrent"
     else
 
         echo -e "### Getting torrents"
@@ -82,7 +91,7 @@ for gallery_link in "${list_items[@]}"; do
         done
 
         echo -e "#### Downloading best torrent $best_name with $best_seeders seeders"
-        download $best_link > "./$id/$torrent_name.torrent"
+        download $best_link "./$id/$torrent_name.torrent"
     fi
 
 done
