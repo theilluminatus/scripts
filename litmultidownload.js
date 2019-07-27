@@ -4,13 +4,16 @@
 // Lit Multidownload
 // Download all stories (all chapters) from a reading list on Literotica.
 // 
-// Install nodejs, run 'npm install', configure the script and run 'npm start'
+// Install nodejs, run `npm i request cheerio litero`, and run the script
 // The cookie should contain bbuserid & bbpassword. You can find the
 // listname as the last part of the url in the url
 // 
 
 
 // OPTIONS
+
+let seperateUrls = [ // either fill in listname or link to specific stories below
+];
 
 let listname = "favorite-stories"; // default list everyone has
 let cookie = "bbuserid=0000000;bbpassword=19dbaef4a4hb83774eb15630e5f20d5a";
@@ -39,7 +42,7 @@ function downloadStory(url, folder) {
 
 	proccess = spawn('litero_getstory', [' -e '+format+' -u ' + '"'+url+'"'], {
 		shell: true,
-		cwd: outputdir+"/"+folder
+		cwd: outputdir+"/"+(folder || "")
 	});
 
 	proccess.stdout.on('data', data => {
@@ -101,6 +104,14 @@ function downloadCompleteStory(url, list) {
 }
 
 function parseList(list, cookie) {
+
+	if (seperateUrls.length) {
+		for (let i = 0; i < seperateUrls.length; i++) {
+			downloadCompleteStory(seperateUrls[i]);
+		}
+		return;
+	}
+
 	request({
 		url: "https://www.literotica.com/my/api/lists/"+list,
 		headers: {Cookie: cookie},
@@ -112,7 +123,7 @@ function parseList(list, cookie) {
 		console.log("\nDownloading "+json.list.title);
 
 		if (!fs.existsSync(outputdir+"/"+list))
-    		fs.mkdirSync(outputdir+"/"+list);
+			fs.mkdirSync(outputdir+"/"+list);
 
 		// download all stories
 		let stories = json.submissions;
