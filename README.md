@@ -16,6 +16,11 @@ Note: most scripts have more info and a guide at the top of the file.
 
 [Link](./eh-torrent-crawler.js)
 
+### checkForMissingEHGallery
+> Quickly split a list of EHentai / EXHentai galleries into files containing Links to removed galleries or active ones.
+
+[Link](./checkForMissingEHGallery.sh)
+
 
 ## Kink.com
 
