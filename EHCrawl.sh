@@ -77,7 +77,7 @@ for gallery_link in "${list_items[@]}"; do
         best_seeders=0
         for torrent in "${torrents_list[@]}"; do
 
-            torrent_link=$(echo $torrent | grep -o "https://$MODE.org/torrent/[^\"]*\.torrent?' | sed 's/.$//')
+            torrent_link=$(echo $torrent | grep -o "https://$MODE.org/torrent/[^\"]*\.torrent?" | sed 's/.$//')
             torrent_name=$(echo $torrent | grep -o 'return false">[^<]*<' | cut -c 15- | sed 's/.$//' )
             torrent_seeders=$(echo $torrent | grep -o 'Seeds:</span> [^<]*<' | cut -c 15- | sed 's/.$//')
 
