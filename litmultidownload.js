@@ -18,6 +18,7 @@ let seperateUrls = [ // either fill in listname or link to specific stories belo
 let listname = "favorite-stories"; // default list everyone has
 let cookie = "bbuserid=0000000;bbpassword=19dbaef4a4hb83774eb15630e5f20d5a";
 let outputdir = "./stories";
+let literoPath = "C:\\Users\\<USER>\\AppData\\Roaming\\npm\\node_modules\\litero\\index.js";
 
 
 // SCRIPT
@@ -40,7 +41,7 @@ parseList(listname, cookie);
 
 function downloadStory(url, folder) {
 
-	proccess = spawn('litero_getstory', [' -e '+format+' -u ' + '"'+url+'"'], {
+	proccess = spawn('node "'+literoPath+'"', [' -e '+format+' -u ' + '"'+url+'"'], {
 		shell: true,
 		cwd: outputdir+"/"+(folder || "")
 	});

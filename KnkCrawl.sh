@@ -10,8 +10,8 @@ DOWNLOADED_QUALITY='_hi' # empty for hd, _hi, _md, _lo
 
 getRating() {
 	shoot="$1"
-	rating=$(curl -s -A "$USER_AGENT" -b "$COOKIE" "https://www.kink.com/api/ratings/$shoot")
-	rating=$(echo $rating | jq -r '.avgRating')
+	rating=$(curl -s "https://www.kink.com/api/ratings/$shoot")
+	rating=$(echo $rating | jq -r '.average')
 	echo "a=$rating; scale=1; a/1" | bc -l
 }
 
@@ -36,12 +36,12 @@ parse () {
 	echo "	<a href='https://www.kink.com/shoot/${shoot}' class='shoot-id'>${shoot}</a>" #link
 
 	#channel
-	subsite=$(echo "$download_html" | grep 'subsite-logo' | grep -o 'class="subsite-logo [^"]*"' | cut -d '"' -f2 | sed -e 's/subsite-logo //g')
+	subsite=$(echo "$download_html" | grep -m 1 '<a href="/channel/' | grep -o '<a href="/channel/[^"]*"' | cut -d '"' -f2 | sed -e 's/\/channel\///g')
 	echo "	<a href='https://www.kink.com/channel/$subsite' class='shoot-channel'>$subsite</a>"
 
 	#date
 	echo -n '	<p class="shoot-date">'
-	echo -n $(echo "$download_html" | awk '/date: /,//' | sed -e 's/date: //g')
+	echo -n $(echo "$download_html" | awk '/Date: /,//' | sed -e 's/Date: //g')
 	echo '</p>'
 
 	#length
